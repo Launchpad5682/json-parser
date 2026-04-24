@@ -1,5 +1,6 @@
 // JSON.parse
-function parser(input: string): Value {
+function parser(rawInput: string): Value {
+  const input = rawInput.trim();
   const bufferInput = Buffer.from(input);
   // UTF character comparison
   if (Buffer.from("true").equals(bufferInput)) {
@@ -33,20 +34,13 @@ function parseString(input: string): string {
   return input.slice(1, -1);
 }
 
+// array handling
 function isArray(input: string): boolean {
   if (input.at(0) === "[") {
     if (input.at(-1) === "]") return true;
     else throw Error(`Syntax Error: Expected "]" at ${input.length}.`);
   }
 
-  return false;
-}
-
-function isObject(input: string): boolean {
-  if (input.at(0) === "{") {
-    if (input.at(-1) === "}") return true;
-    else throw Error(`Syntax Error: Expected "}" at ${input.length}.`);
-  }
   return false;
 }
 
@@ -77,7 +71,7 @@ function parserArray(input: string): any[] {
     }
 
     // nested object
-
+    // true, false, null
     // string
     if (element === '"') {
       i++;
@@ -102,6 +96,15 @@ function parserArray(input: string): any[] {
   }
 
   return arr;
+}
+
+// object handling
+function isObject(input: string): boolean {
+  if (input.at(0) === "{") {
+    if (input.at(-1) === "}") return true;
+    else throw Error(`Syntax Error: Expected "}" at ${input.length}.`);
+  }
+  return false;
 }
 
 function parseObject(input: string): Record<any, unknown> {
