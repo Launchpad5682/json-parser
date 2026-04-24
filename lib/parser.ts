@@ -34,8 +34,9 @@ function parseString(input: string): string {
 }
 
 function isArray(input: string): boolean {
-  if (input.at(0) === "[" && input.at(-1) === "]") {
-    return true;
+  if (input.at(0) === "[") {
+    if (input.at(-1) === "]") return true;
+    else throw Error(`Syntax Error: Expected "]" at ${input.length}.`);
   }
 
   return false;
@@ -51,8 +52,6 @@ function isObject(input: string): boolean {
 function parserArray(input: string): any[] {
   const arr = [] as any[];
 
-  console.log("input", input);
-
   const len = input.length - 1;
   let i = 1;
 
@@ -62,10 +61,17 @@ function parserArray(input: string): any[] {
     // nested array
     if (element === "[") {
       const start = i;
-      while (input[i] !== "]" && i < len) {
+      while (input[i] !== "]" && i < len - 1) {
         i++;
       }
+      console.log("input nested", input[i]);
+
+      if (input[i] !== "]") {
+        throw new Error(`Syntax Error: Expected "]" at ${i}.`);
+      }
+
       arr.push(parserArray(input.substring(start, i + 1)));
+
       i++;
     }
 

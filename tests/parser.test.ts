@@ -53,9 +53,21 @@ test("Array", () => {
   expect(parser("[1,2,3]")).toEqual([1, 2, 3]);
 });
 
+test("Invalid Array", () => {
+  expect(() => parser("[1,2,3")).toThrowError(
+    'Syntax Error: Expected "]" at 6.',
+  );
+});
+
 // Nested Array
 test("Nested Array", () => {
   expect(parser('[["a","b",3,"c"]]')).toEqual([["a", "b", 3, "c"]]);
+});
+
+test("Invalid Nested Array", () => {
+  expect(() => parser('[["a","b",3,"c"]')).toThrowError(
+    'Syntax Error: Expected "]" at 14.',
+  );
 });
 
 // // Nested Object
