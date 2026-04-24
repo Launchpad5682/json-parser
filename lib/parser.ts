@@ -43,8 +43,9 @@ function isArray(input: string): boolean {
 }
 
 function isObject(input: string): boolean {
-  if (input.at(0) === "{" && input.at(-1) === "}") {
-    return true;
+  if (input.at(0) === "{") {
+    if (input.at(-1) === "}") return true;
+    else throw Error(`Syntax Error: Expected "}" at ${input.length}.`);
   }
   return false;
 }
