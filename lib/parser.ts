@@ -15,33 +15,11 @@ function parser(input: string): Value {
   }
   // Parse Array and Objects Recursively
   else if (isArray(input)) {
-    return [];
+    return parserArray(input);
   } else if (isObject(input)) {
-    return {};
+    return parseObject(input);
   }
   throw new Error("Invalid token");
-}
-
-function isNumber(input: string): boolean {
-  let isNumber = true;
-
-  input.split("").forEach((value, index) => {
-    if ((value <= "0" && value >= "9") || (index !== 0 && value === "-")) {
-      isNumber = false;
-    }
-  });
-  return isNumber;
-}
-
-function parseNumber(input: string): number {
-  let num = 0;
-  input
-    .split("")
-    .reverse()
-    .forEach((value, index) => {
-      num += Number(value) * 10 ** index;
-    });
-  return num;
 }
 
 function isString(input: string): boolean {
@@ -68,6 +46,49 @@ function isObject(input: string): boolean {
     return true;
   }
   return false;
+}
+
+function parserArray(input: string): any[] {
+  const arr = [] as any[];
+
+  console.log("input", input);
+
+  const len = input.length - 1;
+  let i = 1;
+
+  while (i < len) {
+    let element = input[i];
+    console.log("Entry", element);
+
+    // string
+    if (element === '"') {
+      i++;
+      const start = i;
+      while (input[i] !== '"') {
+        i++;
+      }
+      console.log("splice", input.substring(start, i));
+      arr.push(input.substring(start, i));
+      i++;
+    }
+    // number
+    else if (element === "-" || (element >= "0" && element <= "9")) {
+      // NUMBER: accumulate until ',' or ']'
+      const start = i;
+      while (input[i] !== "," && input[i] !== "]") {
+        i++;
+      }
+      arr.push(Number(input.slice(start, i)));
+    }
+    // delimiter
+    else if (element === ",") i++;
+  }
+
+  return arr;
+}
+
+function parseObject(input: string): Record<any, unknown> {
+  return {};
 }
 
 export { parser };

@@ -29,10 +29,6 @@ test("FALSE", () => {
   expect(() => parser("FALSE")).toThrowError("Invalid token");
 });
 
-test("Array", () => {
-  expect(parser("[1,2,3]")).toBeArray();
-});
-
 test("Object", () => {
   expect(parser("{a:b}")).toBeObject();
 });
@@ -40,3 +36,33 @@ test("Object", () => {
 test("hello world", () => {
   expect(parser('"hello world"')).toBe("hello world");
 });
+
+// OBJECT
+// noraml array
+test("String/Character Array", () => {
+  // toEqual is deep equality check
+  expect(parser('["a","c","d","hello, world"]')).toEqual([
+    "a",
+    "c",
+    "d",
+    "hello, world",
+  ]);
+});
+
+test("Array", () => {
+  expect(parser("[1,2,3]")).toEqual([1, 2, 3]);
+});
+
+// // Nested Array
+// test("Nested Array", () => {
+//   expect(parser('[["a","b",3,"c"]]')).toBe([["a", "b", 3, "c"]]);
+// });
+
+// // Nested Object
+// test("Nested Object", () => {
+//   expect(parser('{"a":1,"b":["a","b",3],"c":52}')).toBe({
+//     a: 1,
+//     b: ["a", "b", 3],
+//     c: 52,
+//   });
+// });
