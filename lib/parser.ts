@@ -44,6 +44,41 @@ function isArray(input: string): boolean {
   return false;
 }
 
+function processArray(
+  input: string,
+  index: number,
+  originalLength: number,
+): { start: number; end: number } {
+  const start = index;
+  while (input[index] !== "]" && index < originalLength - 1) {
+    index++;
+  }
+  console.log("input nested", input[index]);
+
+  if (input[index] !== "]") {
+    throw new Error(`Syntax Error: Expected "]" at ${index}.`);
+  }
+
+  return { start, end: index };
+}
+
+function processString(
+  input: string,
+  index: number,
+  originalLength: number,
+): {
+  start: number;
+  end: number;
+} {
+  index++;
+  const start = index;
+  while (input[index] !== '"') {
+    index++;
+  }
+
+  return { start, end: index };
+}
+
 function parserArray(input: string): any[] {
   const arr = [] as any[];
 
@@ -55,32 +90,20 @@ function parserArray(input: string): any[] {
 
     // nested array
     if (element === "[") {
-      const start = i;
-      while (input[i] !== "]" && i < len - 1) {
-        i++;
-      }
-      console.log("input nested", input[i]);
+      const { start, end } = processArray(input, i, len);
 
-      if (input[i] !== "]") {
-        throw new Error(`Syntax Error: Expected "]" at ${i}.`);
-      }
+      arr.push(parserArray(input.substring(start, end + 1)));
 
-      arr.push(parserArray(input.substring(start, i + 1)));
-
-      i++;
+      i = end + 1;
     }
 
     // nested object
     // true, false, null
     // string
     if (element === '"') {
-      i++;
-      const start = i;
-      while (input[i] !== '"') {
-        i++;
-      }
-      arr.push(input.substring(start, i));
-      i++;
+      const { start, end } = processString(input, i, len);
+      arr.push(input.substring(start, end));
+      i = end + 1;
     }
     // number
     else if (element === "-" || (element >= "0" && element <= "9")) {
@@ -107,8 +130,41 @@ function isObject(input: string): boolean {
   return false;
 }
 
-function parseObject(input: string): Record<any, unknown> {
-  return {};
+function parseObject(input: string): Record<string, unknown> {
+  const obj = {};
+  const len = input.length - 1;
+  let i = 1;
+  while (i < len) {
+    let element = input[i];
+    console.log("element", element);
+    let key: string, value;
+    if ((element = '"')) {
+      const { start, end } = processString(input, i, len);
+      key = input.substring(start, end);
+      console.log("key", key);
+      i = end + 1;
+    }
+    if (!key) {
+      throw new Error("Fuck you, give me valid object.");
+    }
+    if (input[i] === ":") {
+      i++;
+    }
+    // process value now
+    if (input[i] === "-" || (input[i] >= "0" && input[i] <= "9")) {
+      // NUMBER: accumulate until ',' or ']'
+      const start = i;
+      while (input[i] !== "," && input[i] !== "}") {
+        i++;
+      }
+      value = Number(input.slice(start, i));
+      console.log("value", value);
+    }
+    if (input[i] === ",") i++;
+
+    obj[key] = value;
+  }
+  return obj;
 }
 
 export { parser };
