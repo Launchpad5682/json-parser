@@ -58,7 +58,18 @@ function parserArray(input: string): any[] {
 
   while (i < len) {
     let element = input[i];
-    console.log("Entry", element);
+
+    // nested array
+    if (element === "[") {
+      const start = i;
+      while (input[i] !== "]" && i < len) {
+        i++;
+      }
+      arr.push(parserArray(input.substring(start, i + 1)));
+      i++;
+    }
+
+    // nested object
 
     // string
     if (element === '"') {
@@ -67,7 +78,6 @@ function parserArray(input: string): any[] {
       while (input[i] !== '"') {
         i++;
       }
-      console.log("splice", input.substring(start, i));
       arr.push(input.substring(start, i));
       i++;
     }

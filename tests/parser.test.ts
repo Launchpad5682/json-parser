@@ -53,10 +53,10 @@ test("Array", () => {
   expect(parser("[1,2,3]")).toEqual([1, 2, 3]);
 });
 
-// // Nested Array
-// test("Nested Array", () => {
-//   expect(parser('[["a","b",3,"c"]]')).toBe([["a", "b", 3, "c"]]);
-// });
+// Nested Array
+test("Nested Array", () => {
+  expect(parser('[["a","b",3,"c"]]')).toEqual([["a", "b", 3, "c"]]);
+});
 
 // // Nested Object
 // test("Nested Object", () => {
