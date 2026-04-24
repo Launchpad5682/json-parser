@@ -70,6 +70,21 @@ test("Invalid Nested Array", () => {
   );
 });
 
+test("Object", () => {
+  expect(
+    parser(
+      '{"name":"Alice","age":28,"active":true,"score":-5,"data":null,"city":"NYC"}',
+    ),
+  ).toEqual({
+    name: "Alice",
+    age: 28,
+    active: true,
+    score: -5,
+    data: null,
+    city: "NYC",
+  });
+});
+
 // // Nested Object
 // test("Nested Object", () => {
 //   expect(parser('{"a":1,"b":["a","b",3],"c":52}')).toBe({
